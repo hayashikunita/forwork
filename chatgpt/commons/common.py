@@ -1,5 +1,6 @@
 import os
 import configparser
+import tomllib
 
 # dirname
 # path
@@ -59,7 +60,7 @@ class Common:
     def excel_dir_path(cls):
 
         data_dir_path = cls.data_dir_path()
-        excel_dir_path = os.path.join(data_dir_path,'pdf')
+        excel_dir_path = os.path.join(data_dir_path,'excel')
         # -> /chatgpt/commons
         return excel_dir_path
     
@@ -78,6 +79,14 @@ class Common:
         utils_dir_path = os.path.join(chatgpt_dir_path, 'utils')
         # -> /chatgpt/commons
         return utils_dir_path
+    
+    @classmethod
+    def prompts_dir_path(cls):
+
+        chatgpt_dir_path = cls.chatgpt_dir_path()
+        prompts_dir_path = os.path.join(chatgpt_dir_path, 'prompts')
+        # -> /chatgpt/commons
+        return prompts_dir_path
     
     # -----------------file取得-----------------
     @classmethod
@@ -103,4 +112,19 @@ class Common:
         config.read(file_path)
         return  config
 
+
+    @classmethod
+    def load_systemprompt(cls, name:str):
+
+        toml_name = f'{name}.toml'        
+        # 3. さらにその親ディレクトリを取得 (2つ上の階層)
+        target_dir = cls.prompts_dir_path()
+        # -> /chatgpt        
+        # ここでは /project/data/target.txt を目指します
+        file_path = os.path.join(target_dir, toml_name)
+        # -> /chatgpt/setting.ini
+        with open(file_path, "rb") as f:    
+            system_prompt_toml = tomllib.load(f)
+            system_prompt = system_prompt_toml["prompt"]
+            return system_prompt
 

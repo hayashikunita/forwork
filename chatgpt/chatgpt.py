@@ -1,33 +1,42 @@
-import openai
-from dotenv import load_dotenv
+from openai import OpenAI
 import os
+from commons.common import Common
+from dotenv import load_dotenv
 
+load_dotenv()
+common = Common()
+config  = common.load_config()
+model = config['openai']['model']
+maxtokens = int(config['openai']['maxtokens'])
+temperature = float(config['openai']['temperature'])
 
-
-
-# OpenAI API キーを設定
-# .env ファイルを読み込む
-# load_dotenv()
-
-# model = config['openai']['model']
-# maxtokens = config['Database']['maxtokens']
-# temperature = config['Database']['temperature']
-
-
-def openai_answer(system_prompt):
+def openai_answer(system_prompt , df = None,  txt = None):
     try:
+        prompt = system_prompt["content"]
+        print(prompt)
         open_ai_key = os.environ.get('OPENAI_API_KEY')
-        openai.api_key = open_ai_key
-        # ChatGPT API にリクエストを送信
-        response = openai.ChatCompletion.create(
-            model=model,  
-            messages=[
-                {"role": "system", "content": "あなたは親切なアシスタントです。"},
-                {"role": "user", "content": system_prompt}
-            ],
-            max_tokens=maxtokens,
-            temperature=temperature
-        )
+        client = OpenAI(api_key=open_ai_key)
+
+        data = ""
+        if df is not None:
+            temp_str = f' reference1 : {df} ,'
+            data += temp_str
+        if txt is not None:
+            temp_str = f' reference2: {txt} ,'
+            data += temp_str
+
+        try:
+            response = client.chat.completions.create(
+                model=model, # ここで使用したいモデルを指定してください
+                messages=[
+                    {"role": "system", "content": str(prompt)},
+                    {"role": "assistant", "content": data}
+                ],
+                max_tokens= maxtokens,
+                temperature= temperature
+            )
+        except Exception as e:
+            print("Error occurred:", str(e))
 
         usage = response.usage
         print(f"--- OpenAI API 応答 (モデル: {model}) ---")
@@ -36,10 +45,13 @@ def openai_answer(system_prompt):
         print(f"合計トークン: {usage.total_tokens} tokens")
         print(f"----------------------------------------")
 
-        # レスポンスを取得
-        return response['choices'][0]['message']['content']
-    
-
+        # 応答からテキストコンテンツを抽出
+        # 応答を処理するコード
+        if response.choices and response.choices[0].message and response.choices[0].message.content:
+            print("AIからの応答:", response.choices[0].message.content.strip())
+        else:
+            print("エラー: OpenAIからの応答にコンテンツが含まれていませんでした。")
+            return None
+        
     except Exception as e:
         return f"エラーが発生しました: {e}"
-
