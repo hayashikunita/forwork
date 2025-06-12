@@ -1,0 +1,13 @@
+[project]
+name = "mcpserver"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.8.0",
+    "oandapyv20>=0.7.2",
+    "pydantic>=2.11.5",
+    "requests>=2.32.4",
+    "six>=1.17.0",
+]
