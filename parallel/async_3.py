@@ -1,3 +1,7 @@
+# 参考②：
+# https://techgrowup.net/python-asyncio-2/#toc4
+
+
 import asyncio
 
 async def task_1():
