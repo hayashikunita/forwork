@@ -1,0 +1,57 @@
+repos:
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v5.0.0
+  #   hooks:
+  #     - id: trailing-whitespace
+  #     - id: end-of-file-fixer
+
+    # black: 自動フォーマットで一貫したコードスタイルに統一
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+
+  # flake8: コーディングスタイルの静的解析、PEP 8 準拠チェック
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+
+  # mypy: 型チェックによる静的解析（--ignore-missing-imports, --disallow-untyped-defs 付き）
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+
+  # AWSキーやAPIトークンなどのハードコードされたシークレットを検出
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.16.1
+  #   hooks:
+  #     - id: mypy
+  #       args: [--ignore-missing-imports, --disallow-untyped-defs]
+  #       additional_dependencies: ["types-requests"]
+
+  # AWSキーやAPIトークンなどのハードコードされたシークレットを検出
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+
+  #  Git履歴やステージ済みファイルから秘密情報の漏洩を検出
+  # - repo: https://github.com/zricethezav/gitleaks
+  #   rev: v8.18.1
+  #   hooks:
+  #     - id: gitleaks
+  #       language: python
+  #       entry: gitleaks detect --no-git --redact --source=.
+  #       additional_dependencies: ["gitleaks"]
+
+  # 脆弱性、シークレット、設定ミス、ライセンス違反などを検出できる万能スキャナ
+  - repo: local
+    hooks:
+      - id: trivy-scan
+        name: Run Trivy Security Scan
+        entry: ./scripts/run_trivy.sh
+        language: system
+        types: [file]
+
