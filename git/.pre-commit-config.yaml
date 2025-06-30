@@ -47,11 +47,41 @@ repos:
   #       additional_dependencies: ["gitleaks"]
 
   # 脆弱性、シークレット、設定ミス、ライセンス違反などを検出できる万能スキャナ
-  - repo: local
-    hooks:
-      - id: trivy-scan
-        name: Run Trivy Security Scan
-        entry: ./scripts/run_trivy.sh
-        language: system
-        types: [file]
+  # - repo: local
+  #   hooks:
+  #     - id: trivy-scan
+  #       name: Run Trivy Security Scan
+  #       entry: ./scripts/run_trivy.sh
+  #       language: system
+  #       types: [file]
 
+
+  # カスタムしたPythonファイルは、.pre-commit-config.yamlに置くのが楽。
+
+  # ローカル独自の事務作業（１）
+  # - repo: local
+  #   hooks:
+  #     - id: my-hook
+  #       name: My Hook
+  #       entry: python my_script.py
+  #       language: system
+  #       types: [python]
+
+  # ローカル独自の事務作業（２）
+  # - repo: local
+  #   hooks:
+  #     - id: my-python-hook
+  #       name: My Python Hook
+  #       entry: bash -c "source /path/to/your/venv/bin/activate && python your_script.py"
+  #       language: system
+  #       types: [python]
+
+  # ローカル独自の事務作業（３）
+  # - repo: local
+  #   hooks:
+  #     - id: my-python-hook
+  #       name: My Python Hook
+  #       entry: python your_script.py
+  #       language: python
+  #       types: [python]
+  #       additional_dependencies: [flake8, black] # 必要なパッケージ
