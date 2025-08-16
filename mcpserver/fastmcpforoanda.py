@@ -75,7 +75,14 @@ def place_order(
         "order": {
             "instrument": instrument,
             "units": units if side == "buy" else -units,
-            "type": "market",
+    side: str = Field(description=f'buyまたはsellが入る。：{buy_or_sell}'),
+    order_type: str = Field(default="market", description='Order type, e.g., "market", "limit", etc.')
+    ) -> str:
+    data = {
+        "order": {
+            "instrument": instrument,
+            "units": units if side == "buy" else -units,
+            "type": order_type,
             "positionFill": "DEFAULT"
         }
     }
